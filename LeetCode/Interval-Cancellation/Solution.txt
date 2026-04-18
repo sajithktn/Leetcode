@@ -1,0 +1,46 @@
+1/**
+2 * @param {Function} fn
+3 * @param {Array} args
+4 * @param {number} t
+5 * @return {Function}
+6 */
+7var cancellable = function(fn, args, t) {
+8    fn(...args);
+9
+10    const intervalId = setInterval(() => {
+11        fn(...args);
+12    }, t);
+13
+14    return function cancelFn() {
+15        clearInterval(intervalId);
+16    };
+17};
+18
+19/**
+20 *  const result = [];
+21 *
+22 *  const fn = (x) => x * 2;
+23 *  const args = [4], t = 35, cancelTimeMs = 190;
+24 *
+25 *  const start = performance.now();
+26 *
+27 *  const log = (...argsArr) => {
+28 *      const diff = Math.floor(performance.now() - start);
+29 *      result.push({"time": diff, "returned": fn(...argsArr)});
+30 *  }
+31 *       
+32 *  const cancel = cancellable(log, args, t);
+33 *
+34 *  setTimeout(cancel, cancelTimeMs);
+35 *   
+36 *  setTimeout(() => {
+37 *      console.log(result); // [
+38 *                           //     {"time":0,"returned":8},
+39 *                           //     {"time":35,"returned":8},
+40 *                           //     {"time":70,"returned":8},
+41 *                           //     {"time":105,"returned":8},
+42 *                           //     {"time":140,"returned":8},
+43 *                           //     {"time":175,"returned":8}
+44 *                           // ]
+45 *  }, cancelTimeMs + t + 15)    
+46 */
