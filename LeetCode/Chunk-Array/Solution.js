@@ -1,0 +1,7 @@
+type JSONValue = null | boolean | number | string | JSONValue[] | { [key: string]: JSONValue };
+type Obj = Record<string, JSONValue> | Array<JSONValue>;
+
+function chunk(arr: Obj[], size: number): Obj[][] {
+  if(arr.length === 0 || size < 1) return []
+  return [arr.slice(0,size), ...chunk(arr.slice(size), size)]
+};
